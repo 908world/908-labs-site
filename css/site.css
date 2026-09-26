@@ -1,0 +1,27 @@
+/*
+ * 908 Labs — hand-written additions on top of the exported Framer styles (framer-*.css).
+ * Edit here for hover states, the phone menu and form feedback.
+ */
+
+/* ---------- Lenis smooth scroll (from lenis/dist/lenis.css) ---------- */
+html.lenis, html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* ---------- form loading spinner (Framer "Spinner" layer) ---------- */
+.form-spinner {
+  width: 20px; height: 20px; flex: none; position: relative; overflow: hidden;
+  -webkit-mask: url('/assets/img/pGiXYozQ3mE4cilNOItfe2L2fUA.svg') alpha no-repeat center / cover add;
+          mask: url('/assets/img/pGiXYozQ3mE4cilNOItfe2L2fUA.svg') alpha no-repeat center / cover add;
+}
+.form-spinner > div { position: absolute; inset: 0; animation: form-spin 1s linear infinite; }
+.form-spinner i {
+  position: absolute; left: 50%; top: 0; width: 2px; height: 2px; border-radius: 1px;
+  background: #fff; transform: translateX(-50%);
+}
+@keyframes form-spin { to { transform: rotate(360deg); } }
+
+/* ---------- hover transitions for Framer's .hover layouts ---------- */
+.framer-v-oqizzt .framer-1knl103, .framer-v-oqizzt .framer-6anl3s { transition: height .4s cubic-bezier(0.34, 1.25, 0.64, 1); }
+.framer-v-oqizzt .framer-jqf6y3, .framer-v-oqizzt .framer-10dwp0c p { transition: color .4s; }

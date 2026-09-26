@@ -1,0 +1,17 @@
+.BhpcYAWp-line {
+					width: 100%;
+					display: block;
+					transform-style: preserve-3d;
+				}
+				.BhpcYAWp-word-wrapper {
+					display: inline-block;
+					transform-style: preserve-3d;
+					white-space: pre;
+				}
+				.BhpcYAWp-span {
+					display: inline-block;
+					transform-style: preserve-3d;
+					white-space: pre;
+					will-change: transform, color, text-shadow;
+					transform-origin: 50% 50%;
+				}

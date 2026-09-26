@@ -1,0 +1,17 @@
+.OaTTZfcy-line {
+					width: 100%;
+					display: block;
+					transform-style: preserve-3d;
+				}
+				.OaTTZfcy-word-wrapper {
+					display: inline-block;
+					transform-style: preserve-3d;
+					white-space: pre;
+				}
+				.OaTTZfcy-span {
+					display: inline-block;
+					transform-style: preserve-3d;
+					white-space: pre;
+					will-change: transform, color, text-shadow;
+					transform-origin: 50% 50%;
+				}
