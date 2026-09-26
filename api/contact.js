@@ -24,7 +24,11 @@ module.exports = async (req, res) => {
   if (data.website || data.company) { res.statusCode = 200; return res.end(JSON.stringify({ ok: true })); }
 
   const key = process.env.RESEND_API_KEY;
-  if (!key) { res.statusCode = 500; return res.end(JSON.stringify({ ok: false, error: 'Email not configured' })); }
+  if (!key) {
+    console.error('RESEND_API_KEY is not set for this deployment');
+    res.statusCode = 500;
+    return res.end(JSON.stringify({ ok: false, error: 'RESEND_API_KEY is not set' }));
+  }
 
   const page = data._page || '';
   delete data._page;
@@ -46,7 +50,13 @@ module.exports = async (req, res) => {
     }),
   });
   res.setHeader('Content-Type', 'application/json');
-  if (!r.ok) { res.statusCode = 502; return res.end(JSON.stringify({ ok: false })); }
+  if (!r.ok) {
+    let detail = '';
+    try { detail = (await r.json()).message || ''; } catch { /* ignore */ }
+    console.error('Resend rejected the email:', r.status, detail);
+    res.statusCode = 502;
+    return res.end(JSON.stringify({ ok: false, error: `Resend ${r.status}: ${detail}` }));
+  }
   res.statusCode = 200;
   res.end(JSON.stringify({ ok: true }));
 };

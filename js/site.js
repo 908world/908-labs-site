@@ -508,7 +508,12 @@
           const r = await fetch(form.dataset.endpoint || '/api/contact', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
           });
-          if (!r.ok) throw new Error(String(r.status));
+          if (!r.ok) {
+            let why = String(r.status);
+            try { why = (await r.json()).error || why; } catch { /* ignore */ }
+            console.error('[908 form] not sent:', why);   // visible in the browser console
+            throw new Error(why);
+          }
           setState('success');
           form.reset();
         } catch (err) {
