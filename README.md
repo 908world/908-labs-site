@@ -32,11 +32,20 @@ Replace the file in `assets/img/` and keep the filename. If you use a new filena
 
 ## Forms
 
-Every form (the footer "Get in Touch", Contact, and the three package enquiry forms) posts to `/api/contact`, which emails the submission. Set these in Vercel → Project → Settings → Environment Variables:
+Every form (the footer "Get in Touch", Contact, and the three package enquiry forms) posts to `/api/contact`. That function:
+
+1. emails the enquiry to you (reply-to is set to the sender), and
+2. sends the person a branded confirmation email with a copy of what they sent.
+
+Every field is required. On the contact forms, "Phone no." was replaced by a Message box. The confirmation text lives in `api/contact.js` → `confirmationHtml` (it promises a reply "within two working days"; edit it to suit).
+
+Settings live in Vercel → Project → Settings → Environment Variables:
 
 - `RESEND_API_KEY`: your Resend key (required)
 - `CONTACT_TO`: where enquiries go (default `labs@908.world`)
-- `CONTACT_FROM`: a sender on a domain you've verified in Resend, e.g. `908 Labs <hello@908.world>` (the default `onboarding@resend.dev` only delivers to your own Resend account email)
+- `CONTACT_FROM`: a sender on a domain you've verified in Resend, e.g. `908 Labs <hello@908.world>`. **Confirmation emails only go out once this is set.** Until the domain is verified, Resend only delivers to your own Resend inbox.
+
+After changing a variable, redeploy (Vercel → Deployments → ⋯ → Redeploy).
 
 ## Fonts
 
