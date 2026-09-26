@@ -25,3 +25,25 @@ html.lenis, html.lenis body { height: auto; }
 /* ---------- hover transitions for Framer's .hover layouts ---------- */
 .framer-v-oqizzt .framer-1knl103, .framer-v-oqizzt .framer-6anl3s { transition: height .4s cubic-bezier(0.34, 1.25, 0.64, 1); }
 .framer-v-oqizzt .framer-jqf6y3, .framer-v-oqizzt .framer-10dwp0c p { transition: color .4s; }
+
+/* ---------- smoother small hovers ---------- */
+.framer-v-1snaxn2 [style*="background-image"], .framer-v-1qw279p [style*="background-image"],
+.framer-v-1cnw714 [style*="background-image"], .framer-v-18tdlwz [style*="background-image"] { transition: background-image .3s ease; }
+.framer-DWDyA .framer-msadyk { transition: gap .3s ease; }
+[data-href] { cursor: pointer; }
+
+/* ---------- body copy in Apfel Grotezk ----------
+ * Framer mixed Inter, Kode Mono and an unnamed font ("undefined") into body copy, labels and pills.
+ * Headlines and buttons keep Helvetica Now Text; everything else reads in Apfel Grotezk. */
+.framer-text[style*="Inter"],
+.framer-text[style*="Kode Mono"],
+.framer-text[style*='"undefined"'],
+.framer-text[style*="&quot;undefined"],
+p.framer-text:not([style*="--framer-font-family"]):not([class*="framer-styles-preset"]) {
+  --framer-font-family: "Apfel Grotezk", "Apfel Grotezk Placeholder", sans-serif !important;
+  --framer-font-style: normal !important;
+}
+.framer-text[style*="Inter"][style*="--framer-font-weight:6"],
+.framer-text[style*="Inter"][style*="--framer-font-weight: 6"],
+.framer-text[style*="Inter"][style*="--framer-font-weight:7"] { --framer-font-weight: 500 !important; }
+input, textarea, select { font-family: "Apfel Grotezk", "Apfel Grotezk Placeholder", sans-serif; }

@@ -284,32 +284,82 @@
   // the exact hovered markup recorded from the original site is stored in a sibling
   // <template data-hover-state> and swapped in on hover.
   const HOVER_STATES = () => document.querySelector('template[data-hover-states]');
+  const MORPH = { dur: 420, ease: 'cubic-bezier(0.22, 1, 0.36, 1)' };
+  const keyOf = e => [...e.classList].find(c => /^framer-[a-z0-9]{5,8}$/.test(c));
+
+  // Card hovers (project, package, client and team cards) use the exact hovered markup recorded
+  // from the original site. It is laid over the card and morphed in: text that exists in both
+  // states glides to its new position, new elements fade in, so nothing jumps or ghosts.
   function snapshotHover(el) {
     const store = HOVER_STATES();
     const hovered = store && store.content.querySelector(`[data-hover-key="${el.dataset.hoverSnap}"]`);
     if (!hovered) return null;
-    let rest = null;
-    const keep = n => n.startsWith('data-hover') || n === 'data-hover-bound';
-    const apply = (attrs, html) => {
-      [...el.attributes].forEach(a => { if (!keep(a.name)) el.removeAttribute(a.name); });
-      attrs.forEach(([n, v]) => { if (!keep(n)) el.setAttribute(n, v); });
-      el.innerHTML = html;
-      initHover(el);
-      if (!reduceMotion) {
-        [...el.children].forEach(ch => ch.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250, easing: 'ease-out' }));
-      }
+    let layer = null, pairs = [], fresh = [], mode = 'morph', token = 0;
+
+    const build = () => {
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+      layer = hovered.cloneNode(true);
+      ['data-hover-key', 'data-hover-snap', 'data-href', 'role', 'tabindex'].forEach(a => layer.removeAttribute(a));
+      layer.setAttribute('data-hover-layer', '');
+      Object.assign(layer.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', margin: '0', zIndex: '2' });
+      // originals, by class, measured before the layer exists
+      const orig = {};
+      el.querySelectorAll('[class]').forEach(e => {
+        if (e.closest('[data-hover-layer]')) return;
+        const k = keyOf(e); if (!k) return;
+        (orig[k] = orig[k] || []).push(e);
+      });
+      const bgBefore = getComputedStyle(el).backgroundColor;
+      el.appendChild(layer);
+      mode = getComputedStyle(layer).backgroundColor === bgBefore ? 'morph' : 'fade';
+      pairs = []; fresh = [];
+      const seen = {};
+      layer.querySelectorAll('[class]').forEach(e => {
+        const k = keyOf(e); if (!k) return;
+        const i = seen[k] = (seen[k] || 0) + 1;
+        const o = orig[k] && orig[k][i - 1];
+        if (o) {
+          if (e.matches('[data-framer-component-type="RichTextContainer"]')) {
+            const a = o.getBoundingClientRect(), b = e.getBoundingClientRect();
+            pairs.push({ e, dx: a.left - b.left, dy: a.top - b.top });
+          }
+        } else if (!e.parentElement.closest('[data-fresh]')) {
+          e.setAttribute('data-fresh', ''); fresh.push(e);
+        }
+      });
+      initHover(layer);
     };
+
+    const run = dir => {
+      const t = ++token;
+      const opts = { duration: MORPH.dur, easing: MORPH.ease, fill: 'both' };
+      const anims = [];
+      if (reduceMotion) { if (dir < 0 && layer) { layer.remove(); layer = null; } return; }
+      if (mode === 'fade') {
+        anims.push(layer.animate([{ opacity: 0 }, { opacity: 1 }], { ...opts, direction: dir > 0 ? 'normal' : 'reverse' }));
+      } else {
+        // everything that didn't change is identical in both layers, so only morph the differences
+        pairs.forEach(({ e, dx, dy }) => anims.push(e.animate(
+          [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0px, 0px)' }],
+          { ...opts, direction: dir > 0 ? 'normal' : 'reverse' })));
+        fresh.forEach(e => anims.push(e.animate(
+          [{ opacity: 0, transform: `${getComputedStyle(e).transform === 'none' ? '' : getComputedStyle(e).transform} scale(0.94)`.trim() },
+           { opacity: 1, transform: getComputedStyle(e).transform }],
+          { ...opts, direction: dir > 0 ? 'normal' : 'reverse' })));
+      }
+      if (dir < 0) Promise.all(anims.map(a => a.finished.catch(() => {}))).then(() => {
+        if (t === token && layer) { layer.remove(); layer = null; }
+      });
+    };
+
     return {
-      on: () => {
-        rest = { html: el.innerHTML, attrs: [...el.attributes].map(a => [a.name, a.value]).filter(([n]) => n !== 'class' || true) };
-        apply([...hovered.attributes].map(a => [a.name, a.value]), hovered.innerHTML);
-      },
-      off: () => { if (rest) apply(rest.attrs.map(([n, v]) => [n, n === 'class' ? v.replace(/\s*\bhover\b/, '') : v]), rest.html); },
+      on: () => { if (!layer) build(); else layer.getAnimations({ subtree: true }).forEach(a => a.cancel()); run(1); },
+      off: () => { if (!layer) return; layer.getAnimations({ subtree: true }).forEach(a => a.cancel()); run(-1); },
     };
   }
 
   function initHover(scope = document) {
-    const bindOne = (el, on, off) => {
+    const bindOne = (el, on, off, cls = true) => {
       if (el.dataset.hoverBound) return;
       el.dataset.hoverBound = '1';
       let hovered = false;
@@ -318,7 +368,7 @@
       el.addEventListener('pointerenter', e => {
         if (e.pointerType !== 'mouse' || hovered) return;
         hovered = true;
-        el.classList.add('hover');
+        if (cls) el.classList.add('hover');
         on(el);
       });
       el.addEventListener('pointerleave', e => {
@@ -330,9 +380,9 @@
         off(el);
       });
     };
-    scope.querySelectorAll('[data-hover-snap]').forEach(el => {
+    scope.querySelectorAll('[data-hover-snap]:not([data-hover-layer] *)').forEach(el => {
       const s = snapshotHover(el);
-      if (s) bindOne(el, s.on, s.off);
+      if (s) bindOne(el, s.on, s.off, false);
     });
     HOVERS.forEach(h => scope.querySelectorAll(h.sel).forEach(el => bindOne(el, h.on, h.off)));
   }
@@ -469,6 +519,19 @@
     });
   }
 
+  /* ------------------------------------------------------------ 7b. clickable cards */
+  function initCardLinks() {
+    document.querySelectorAll('[data-href]').forEach(card => {
+      const go = e => {
+        if (e.target.closest('a')) return;           // inner links handle themselves
+        if (e.metaKey || e.ctrlKey) window.open(card.dataset.href, '_blank');
+        else location.href = card.dataset.href;
+      };
+      card.addEventListener('click', go);
+      card.addEventListener('keydown', e => { if (e.key === 'Enter') go(e); });
+    });
+  }
+
   /* ------------------------------------------------------------ 8. smooth scroll */
   // Original: "Smooth Scroll" component (Lenis) with intensity 10 -> duration 1.0
   function initSmoothScroll() {
@@ -500,6 +563,7 @@
     initHover();
     initNav();
     initForms();
+    initCardLinks();
     initSmoothScroll();
     document.documentElement.classList.add('js-ready');
   };

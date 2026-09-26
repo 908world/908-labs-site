@@ -38,8 +38,17 @@ Every form (the footer "Get in Touch", Contact, and the three package enquiry fo
 - `CONTACT_TO`: where enquiries go (default `labs@908.world`)
 - `CONTACT_FROM`: a sender on a domain you've verified in Resend, e.g. `908 Labs <hello@908.world>` (the default `onboarding@resend.dev` only delivers to your own Resend account email)
 
+## Fonts
+
+Headlines and buttons use **Helvetica Now Text**, and all body copy uses **Apfel Grotezk**. The Apfel override lives at the bottom of `css/site.css`.
+
+## Links
+
+- The "View Live Site" buttons on the case studies link to each project's live site. Superlative has no URL yet: add one to its button in `projects/superlative.html` (the `<a` just before "View Live Site").
+- The footer Instagram icon links to @908world.
+- Every project card links to its case study.
+
 ## Carried over from the live Framer site as-is
 
-- The footer social icons link to Framer's own Instagram and YouTube (template placeholders on the live site). Search for `instagram.com/framer` and `youtube.com/@framer` to replace them.
 - The nav shows "Projects (06)", but there are five project pages.
 - On About, the phone menu's fourth link reads "Journal" and goes to /packages.
