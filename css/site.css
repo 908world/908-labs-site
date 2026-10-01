@@ -50,14 +50,18 @@ input, textarea, select { font-family: "Apfel Grotezk", "Apfel Grotezk Placehold
 
 /* ---------- no pixel font ----------
  * The original Framer site used a pixel display font (registered as "undefined") for the
- * About service-card titles and the "+" after the milestone counters. Titles now use
- * Helvetica Now Text Bold (like the other card labels); the "+" matches its number. */
+ * About service-card titles and the "+" after the milestone counters. Titles now match the
+ * site's other headings: Helvetica Now Text Bold Italic, tight spacing, sentence case.
+ * The "+" matches its number. */
 .framer-styles-preset-1qtamek,
 .framer-styles-preset-1qtamek h4,
 h4.framer-styles-preset-1qtamek {
-  --framer-font-family: "Helvetica Now Text  Bold", "Helvetica Now Text  Bold Placeholder", sans-serif !important;
+  --framer-font-family: "Helvetica Now Text  Bold Italic", "Helvetica Now Text  Bold Italic Placeholder", sans-serif !important;
+  --framer-font-style: italic !important;
   --framer-font-weight: 700 !important;
-  --framer-letter-spacing: -0.04em !important;
+  --framer-letter-spacing: -0.06em !important;
+  --framer-line-height: 1em !important;
+  --framer-text-transform: none !important;
 }
 span[style*='font-family:"undefined"'],
 span[style*="font-family: \"undefined\""] {
