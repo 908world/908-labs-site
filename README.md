@@ -37,6 +37,16 @@ Every form (the footer "Get in Touch", Contact, and the three package enquiry fo
 1. emails the enquiry to you (reply-to is set to the sender), and
 2. sends the person a branded confirmation email with a copy of what they sent.
 
+Each form says where it came from, and the enquiry email subject starts with it in brackets so you can filter your inbox:
+
+| Form | Subject starts with |
+| --- | --- |
+| Starter / Studio / World package pages | `[Starter Package]`, `[Studio Package]`, `[World Package]` |
+| Contact page | `[Contact page]` |
+| Footer "Get in Touch" (every page) | `[General enquiry]` |
+
+The email also has an "Enquiry" row, a Resend tag (`form: starter-package` etc.) and an `X-908-Form` header. Package enquirers get a confirmation that names their package. The labels are set in `build.py` → `PACKAGE_FORMS`, written into each `<form data-form="…">`.
+
 Every field is required. On the contact forms, "Phone no." was replaced by a Message box. The confirmation text lives in `api/contact.js` → `confirmationHtml` (it promises a reply "within two working days"; edit it to suit).
 
 Settings live in Vercel → Project → Settings → Environment Variables:
@@ -46,6 +56,10 @@ Settings live in Vercel → Project → Settings → Environment Variables:
 - `CONTACT_FROM`: a sender on a domain you've verified in Resend, e.g. `908 Labs <hello@908.world>`. **Confirmation emails only go out once this is set.** Until the domain is verified, Resend only delivers to your own Resend inbox.
 
 After changing a variable, redeploy (Vercel → Deployments → ⋯ → Redeploy).
+
+## Wording
+
+Sitewide positioning is "design & development agency" (page titles, social previews, hero tagline). The swaps live in `build.py` → `COPY_CHANGES`.
 
 ## Fonts
 

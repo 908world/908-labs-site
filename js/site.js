@@ -504,6 +504,7 @@
         setState('loading');
         const data = Object.fromEntries(new FormData(form).entries());
         data._page = location.pathname;
+        data._form = form.dataset.form || 'General enquiry';   // e.g. "Starter Package" (set in build.py)
         try {
           const r = await fetch(form.dataset.endpoint || '/api/contact', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
