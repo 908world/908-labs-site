@@ -50,7 +50,7 @@ function confirmationHtml(first, fields, form) {
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0b0b;padding:32px 16px"><tr><td align="center">
 <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#161616;border-radius:24px;padding:36px">
 <tr><td style="color:#ffffff;font-size:30px;font-weight:700;font-style:italic;letter-spacing:-1px;padding-bottom:4px">908 Labs&trade;</td></tr>
-<tr><td style="color:#8a8a8a;font-size:13px;padding-bottom:28px">Design &amp; Development &middot; London</td></tr>
+<tr><td style="color:#8a8a8a;font-size:13px;padding-bottom:28px">Design &amp; Development Studio &middot; London</td></tr>
 <tr><td style="color:#f2f2f2;font-size:16px;line-height:1.55;padding-bottom:24px">
 Hi ${esc(first || 'there')},<br><br>
 ${isPackage(form) ? `Thanks for your interest in the <b>${esc(form)}</b>. We've got your enquiry` : "Thanks for reaching out. We've got your message"} and someone from the team will get back to you within two working days.<br><br>

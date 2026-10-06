@@ -59,7 +59,7 @@ After changing a variable, redeploy (Vercel → Deployments → ⋯ → Redeploy
 
 ## Wording
 
-Sitewide positioning is "design & development agency" (page titles, social previews, hero tagline). The swaps live in `build.py` → `COPY_CHANGES`.
+Sitewide positioning is "design & development studio" (page titles, social previews, hero tagline). The swaps live in `build.py` → `COPY_CHANGES`.
 
 ## Fonts
 
